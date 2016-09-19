@@ -2,19 +2,15 @@
 
 class Router
 {
-    protected $uri;
-    protected $method;
-
+    /**
+     * Set the approve route request types
+     *
+     * @var mixed
+     */
     public $routes = [
         'GET'  => [],
         'POST' => []
     ];
-
-    public function __construct()
-    {
-        $this->uri    = ($_SERVER['REQUEST_URI'] != '/') ? trim($_SERVER['REQUEST_URI'], '/') : '/';
-        $this->method = $_SERVER['REQUEST_METHOD'];
-    }
 
     /**
      * Build the GET Route
@@ -39,32 +35,15 @@ class Router
     }
 
     /**
-     * Load the Route
-     *
-     */
-    public function load()
-    {
-        require('../app/routes.php');
-
-        if (array_key_exists($this->uri, $route->routes[$this->method])) {
-            $controller_name = "App\Controllers\\".$route->routes[$this->method][$this->uri]['controller'];
-            $controller = new $controller_name();
-            $method = $route->routes[$this->method][$this->uri]['method'];
-            return $controller->$method();
-        }
-        throw new \Exception('Route does not exist!');
-    }
-
-    /**
      * Setup Route Array
      *
      * @param mixed $path
      * @param mixed $controllerMethod
      * @param mixed $type
      */
-    private static function routeArray($path, $controllerMethod, $type){
+    private static function routeArray($path, $controllerMethod){
         $controller = explode("@", $controllerMethod);
-        
+
         return [
             'path'       => $path,
             'controller' => $controller[0],
@@ -72,4 +51,46 @@ class Router
         ];
 
     }
+
+    /**
+     * Load route file and setup controller
+     *
+     * @param mixed $uri
+     * @param mixed $type
+     */
+    public function load($uri, $type)
+    {
+        require('../app/routes.php');
+
+        if($current = $route->routes[$type][static::cleanUri($uri)]){
+           return static::display($current);
+        }
+
+        throw new \Exception('Route does not exist!');
+    }
+
+    /**
+     * Display the correct controller and method
+     *
+     * @param mixed $route
+     */
+    private static function display($route)
+    {
+        $controller_name = "App\Controllers\\" . $route['controller'];
+        $controller = new $controller_name();
+        $method = $route['method'];
+
+        return $controller->$method();
+    }
+
+    /**
+     * Clean and setup the correct uri
+     *
+     * @param mixed $uri
+     */
+    private static function cleanUri($uri)
+    {
+        return ($uri != '/') ? trim($uri, '/') : '/';
+    }
+
 }
