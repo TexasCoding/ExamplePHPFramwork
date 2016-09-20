@@ -1,4 +1,4 @@
-<?php namespace src;
+<?php namespace Src;
 
 class Router
 {
@@ -37,6 +37,23 @@ class Router
     }
 
     /**
+     * Load route file and setup controller
+     *
+     * @param mixed $uri
+     * @param mixed $type
+     */
+    public function load($uri, $type)
+    {
+        require('../app/routes.php');
+
+        if($current = $route->routes[$type][static::cleanUri($uri)]){
+           return static::display($current);
+        }
+
+        throw new \Exception('Route does not exist!');
+    }
+
+    /**
      * Setup Route Array
      *
      * @param mixed $path
@@ -52,23 +69,6 @@ class Router
             'method'     => $controller[1]
         ];
 
-    }
-
-    /**
-     * Load route file and setup controller
-     *
-     * @param mixed $uri
-     * @param mixed $type
-     */
-    public function load($uri, $type)
-    {
-        require('../app/routes.php');
-
-        if($current = $route->routes[$type][static::cleanUri($uri)]){
-           return static::display($current);
-        }
-
-        throw new \Exception('Route does not exist!');
     }
 
     /**
