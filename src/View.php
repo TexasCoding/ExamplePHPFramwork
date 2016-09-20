@@ -1,9 +1,9 @@
-<?php namespace src;
+<?php namespace Src;
 
 class View
 {
     protected $twig;
-    
+
     public function __construct()
     {
         $loader = new \Twig_Loader_Filesystem('../app/Views');
@@ -23,7 +23,7 @@ class View
      */
     public function render($view, $variables = [])
     {
-        if (! $template = $this->twig->loadTemplate($view . '.view.twig')) {
+        if (! $template = $this->twig->loadTemplate($view . '.html.twig')) {
             throw new \Twig_Error("Error Processing View", 1);
         }
         echo $template->render($variables);

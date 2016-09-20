@@ -1,10 +1,17 @@
 <?php namespace App\Controllers;
 
-class HomeController extends ApplicationController 
+class HomeController extends ApplicationController
 {
     public function index()
     {
-        echo "This is the HomeController@index";
+        $data = [
+            'users' => [
+                'home',
+                'house'
+            ]
+        ];
+
+        return $this->view->render('home/index', $data);
     }
 
     public function about(){
