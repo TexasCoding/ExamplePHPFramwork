@@ -8,8 +8,10 @@ class Router
      * @var mixed
      */
     public $routes = [
-        'GET'  => [],
-        'POST' => []
+        'GET'    => [],
+        'POST'   => [],
+        'PUT'    => [],
+        'DELETE' => []
     ];
 
     /**
